@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:padding="5dp"
+        android:scrollbarSize="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00000000">
+
+            <View
+                android:id="@+id/divider0"
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000" />
+
+            <ImageButton
+                android:id="@+id/btn_SnackBar"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:onClick="onClickSnackBar"
+                android:padding="1dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/snackbar" />
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000" />
+
+            <ImageButton
+                android:id="@+id/btn_Cafe"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:onClick="onClickCafe"
+                android:padding="1dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/cafe" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000" />
+
+            <ImageButton
+                android:id="@+id/btn_CopyPlace"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:onClick="onClickCopyPlace"
+                android:padding="1dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/copyplace" />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000" />
+
+            <ImageButton
+                android:id="@+id/btn_Restaurant"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:onClick="onClickRestaurant"
+                android:padding="1dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/restaurant" />
+
+            <View
+                android:id="@+id/divider4"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000" />
+
+            <ImageButton
+                android:id="@+id/btn_ConvenienceStore"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:onClick="onClickConvenienceStore"
+                android:padding="1dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/conveniencestore" />
+
+            <View
+                android:id="@+id/divider5"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000" />
+
+            <ImageButton
+                android:id="@+id/btn_ATM"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:onClick="onClickATM"
+                android:padding="1dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/atm" />
+
+            <View
+                android:id="@+id/divider6"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000" />
+
+            <ImageButton
+                android:id="@+id/btn_ReadingRoom"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:onClick="onClickReadingRoom"
+                android:padding="1dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/readingroom" />
+
+            <View
+                android:id="@+id/divider7"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000" />
+
+            <ImageButton
+                android:id="@+id/btn_Gym"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:onClick="onClickGym"
+                android:padding="1dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/gym" />
+
+            <View
+                android:id="@+id/divider8"
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/findButton_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="onfindButtonClikded"
+        android:textColor="#ffffff"
+        android:text="길찾기"
+        android:background="#52A354"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+// 맵 뷰 추가하는 부분
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
