@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class FragmentGallery extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.gallery_fragment,container,false);
         myrecyclerview = (RecyclerView)v.findViewById(R.id.gallery_recyclerview);
-        RecyclerViewAdapterImg recyclerAdapter = new RecyclerViewAdapterImg(getContext(),lstImageCard);
+        RecyclerViewAdapterGallery recyclerAdapter = new RecyclerViewAdapterGallery(getContext(),lstImageCard);
         myrecyclerview.setLayoutManager((new GridLayoutManager(getContext(),3)));
         myrecyclerview.setAdapter(recyclerAdapter);
         return v;

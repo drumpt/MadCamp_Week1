@@ -1,16 +1,12 @@
 package com.example.recyclerview;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -26,25 +22,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkAddressVerify();
-
         tabLayout = (TabLayout) findViewById(R.id.tablayout_id);
         viewPager = (ViewPager) findViewById(R.id.viewpager_id);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        // Add Fragment Here
-        // tab name setting here
-        adapter.AddFragment(new Address_book(), "");
+        // Add Fragment and set tab name
+        adapter.AddFragment(new FragmentContacts(), "");
         adapter.AddFragment(new FragmentGallery(), "");
-        adapter.AddFragment(new FragmentFav(), "");
+        adapter.AddFragment(new FragmentRestaurant(), "");
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        // Tab images setting
+        // Set tab image
         tabLayout.getTabAt(0).setIcon(R.drawable.address_book);
         tabLayout.getTabAt(1).setIcon(R.drawable.gallery);
-        tabLayout.getTabAt(2).setIcon(R.drawable.question);
+        tabLayout.getTabAt(2).setIcon(R.drawable.restaurant_tab);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -63,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Remove Shadow From the actionu bar
+        // Remove Shadow From the action bar
         ActionBar actionBar = getSupportActionBar();
 //        actionBar.setElevation(0);
     }
@@ -101,31 +94,5 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void checkAddressVerify() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String[] PERMISSIONS = {
-                    Manifest.permission.READ_CONTACTS,
-                    Manifest.permission.WRITE_CONTACTS,
-                    Manifest.permission.CALL_PHONE,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-            };
-            if (!hasPermissions(this, PERMISSIONS)) {
-                requestPermissions(PERMISSIONS, 1);
-            }
-        }
-    }
-
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }
