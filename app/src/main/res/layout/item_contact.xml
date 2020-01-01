@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
+    android:background="?attr/selectableItemBackground"
     android:padding="10dp">
 
     <androidx.cardview.widget.CardView
@@ -57,7 +58,7 @@
             android:layout_gravity="center_vertical"
             android:background="?actionBarItemBackground"
             android:gravity="right"
-            android:padding="7dp"
+            android:padding="5dp"
             android:src="@drawable/call" />
     </LinearLayout>
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.example.recyclerview;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -27,12 +28,12 @@ public class ImageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String title = intent.getExtras().getString("Title");
         String description = intent.getExtras().getString("Description");
-        int image = intent.getExtras().getInt("Thumbnail");
+        String image = intent.getExtras().getString("Thumbnail");
 
         // Setting values
         imgTitle.setText(title);
         Log.d("TAG",imgTitle.getText().toString());
         imgDescription.setText(description);
-        img.setImageResource(image);
+        img.setImageURI(Uri.parse(image));
     }
 }

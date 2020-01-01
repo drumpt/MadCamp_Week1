@@ -1,20 +1,30 @@
 package com.example.recyclerview;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import javax.security.auth.Destroyable;
 
 public class ImageCard {
     private  String Title;
     private String Description;
-    private int Thumbnail;
+    private Bitmap bm;
+    private Uri uri;
 
     public ImageCard(){
 
     }
 
-    public ImageCard(String title,String description,int thumbnail){
+    public ImageCard(String title,String description,Bitmap bitmap){
         Title = title;
         Description = description;
-        Thumbnail = thumbnail;
+        bm = bitmap;
+    }
+
+    public ImageCard(String title,String description,Uri uri){
+        Title = title;
+        Description = description;
+        this.uri = uri;
     }
 
     //Getter
@@ -26,8 +36,12 @@ public class ImageCard {
         return Description;
     }
 
-    public int getThumbnail() {
-        return Thumbnail;
+    public Bitmap getBitmap() {
+        return bm;
+    }
+
+    public Uri getUri() {
+        return uri;
     }
 
     //Setter
@@ -40,7 +54,11 @@ public class ImageCard {
         Description = description;
     }
 
-    public void setThumbnail(int thumbnail) {
-        Thumbnail = thumbnail;
+    public void setBitmap(Bitmap bitmap) {
+        bm = bitmap;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 }

@@ -1,0 +1,339 @@
+package com.example.recyclerview;
+
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+
+import noman.googleplaces.NRPlaces;
+import noman.googleplaces.Place;
+import noman.googleplaces.PlacesException;
+import noman.googleplaces.PlacesListener;
+
+public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback, PlacesListener {
+    View v;
+    private ImageView refreshButton;
+    private ImageView backButton;
+    private TextView titleText;
+    private TextView countText;
+    LatLng currentLocation;
+    static double latitude, longitude;
+    final static int MAX_COUNT = 10;
+
+    private GoogleMap mMap;
+    private MapView mapView = null;
+    List<MarkerOptions> previous_markerOptions = new ArrayList<>();
+
+    Calendar calendar = Calendar.getInstance();
+    int month = Calendar.getInstance().get(Calendar.MONTH); // month+1
+    int date = Calendar.getInstance().get(Calendar.DATE);
+    int year = Calendar.getInstance().get(Calendar.YEAR);
+    private String dateString = month + "/" + date + "/" + year;
+
+    private static final HashMap<Integer, String> int2Str = new HashMap<>();
+    static {
+        int2Str.put(1, "첫");
+        int2Str.put(2, "두");
+        int2Str.put(3, "세");
+        int2Str.put(4, "네");
+        int2Str.put(5, "다섯");
+        int2Str.put(6, "여섯");
+        int2Str.put(7, "일곱");
+        int2Str.put(8, "여덟");
+        int2Str.put(9, "아홉");
+        int2Str.put(10, "열");
+    }
+
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.restaurant2_fragment, container, false);
+        final int count = readCount("myfile.txt");
+        final int newCount = writeCount("myfile.txt");
+        titleText = (TextView) v.findViewById(R.id.textView);
+        titleText.setText("오늘의 " + int2Str.get(MAX_COUNT - newCount) + " 번째 맛집");
+        countText = (TextView) v.findViewById(R.id.count_left);
+        countText.setText("오늘 남은 재시도 횟수 : " + newCount);
+        refreshButton = (ImageView) v.findViewById(R.id.refresh_button);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (count > 0) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    FragmentRestaurant2 fragmentRestaurant2 = new FragmentRestaurant2();
+                    fragmentTransaction.replace(R.id.restaurant2, fragmentRestaurant2);
+                    fragmentTransaction.commitAllowingStateLoss();
+                } else Toast.makeText(getContext(), "남은 맛집이 없습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        backButton = (ImageView) v.findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                FragmentRestaurant fragmentRestaurant = new FragmentRestaurant();
+                fragmentTransaction.replace(R.id.restaurant1, fragmentRestaurant);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+        });
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mapView = (MapView) v.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+        mapView.getMapAsync(this);
+        return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onLowMemory();
+    }
+
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.restaurant2_fragment);
+//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+//        fetchLastLocaton();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        LocationManager lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+//        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//        startActivity(intent);
+//        if (lm == null) {
+//            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//            startActivity(intent);
+//        }
+//        while (lm == null) { }
+
+        Location lmLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (lmLocation == null) {
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
+            lmLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+        while (lmLocation == null) { } // Lock
+
+        mMap.clear();
+        if (previous_markerOptions != null) previous_markerOptions.clear();
+
+        latitude = lmLocation.getLatitude();
+        longitude = lmLocation.getLongitude();
+        currentLocation = new LatLng(latitude, longitude);
+        MapsInitializer.initialize(getContext());
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+        showPlaceInformation(currentLocation);
+    }
+
+    @Override
+    public void onPlacesFailure(PlacesException e) {
+
+    }
+
+    @Override
+    public void onPlacesStart() {
+
+    }
+
+    @Override
+    public void onPlacesSuccess(final List<Place> places) {
+        Log.d("!!!!!!!!!!!!!!!!!!!!!!!!!!!", "onplaceSuccesssssssssssss");
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (noman.googleplaces.Place place : places) {
+                    // 별점과 사진, 혹은 주소도 추가하면 좋을 듯
+//                    String markerSnippet = getCurrentAddress(latLng);
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.title(place.getName());
+                    LatLng latLng = new LatLng(place.getLatitude(), place.getLongitude());
+                    markerOptions.position(latLng);
+
+//                    markerOptions.snippet(markerSnippet);
+//                    mMap.addMarker(markerOptions).showInfoWindow();
+//                    Marker item = mMap.addMarker(markerOptions).showInfoWindow();
+                    previous_markerOptions.add(markerOptions);
+                }
+                // Distinct MarkerOptions
+                HashSet<MarkerOptions> hashSet = new HashSet<>();
+                hashSet.addAll(previous_markerOptions);
+                previous_markerOptions.clear();
+                previous_markerOptions.addAll(hashSet);
+
+                Log.d("Succ***4*134*132*4132*4", Integer.toString(previous_markerOptions.size()));
+
+                int index = new Random().nextInt(previous_markerOptions.size());
+
+                Log.d("awefiofxzbvcnmllsdkf", Integer.toString(index));
+
+                MarkerOptions restaurant = previous_markerOptions.get(index);
+                mMap.addMarker(restaurant).showInfoWindow();
+                mMap.setMyLocationEnabled(true);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(restaurant.getPosition()));
+            }
+        });
+    }
+
+    @Override
+    public void onPlacesFinished() {
+
+    }
+
+    public void showPlaceInformation(LatLng location) {
+        mMap.clear();
+        if (previous_markerOptions != null) previous_markerOptions.clear();
+        new NRPlaces.Builder()
+            .listener(this)
+            .key("AIzaSyDrygOlhd8x69FSZSDVh4_QTugYzNLzPMc")
+            .latlng(location.latitude, location.longitude)
+//                .latlng(36.363123, 127.358255)
+            .radius(500) // Meter
+            .type("restaurant")
+            .build()
+            .execute();
+    }
+
+    public int readCount(String filename) {
+        try {
+            // 파일에서 읽은 데이터를 저장하기 위해서 만든 변수
+            FileInputStream fis = getContext().openFileInput(filename);//파일명
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(fis));
+            String str = buffer.readLine().trim(); // 파일에서 한줄을 읽어옴
+            if (str == "") return MAX_COUNT; // 최초 실행
+            else {
+                String[] tmpList = str.split(" ");
+                if (tmpList[0].equals(dateString)) return Integer.parseInt(tmpList[1]);
+                else return MAX_COUNT;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MAX_COUNT;
+        }
+    }
+
+    public int writeCount(String filename) {
+        int previous_count = readCount(filename);
+        String fullResult;
+        try {
+            if (previous_count == 0) return previous_count;
+            else {
+                FileOutputStream fos = getContext().openFileOutput(filename, Context.MODE_PRIVATE);
+                previous_count--;
+                fullResult = dateString + " " + previous_count;
+                PrintWriter out = new PrintWriter(fos);
+                out.println(fullResult);
+                out.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return previous_count;
+    }
+}

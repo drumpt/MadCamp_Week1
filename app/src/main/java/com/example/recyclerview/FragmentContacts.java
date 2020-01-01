@@ -25,13 +25,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
-public class Address_book extends Fragment {
+public class FragmentContacts extends Fragment {
     View v;
     private RecyclerView myRecyclerView;
     private ArrayList<ContactItem> listContact;
 
     // Constructor
-    public Address_book() {
+    public FragmentContacts() {
 
     }
 
@@ -53,6 +53,7 @@ public class Address_book extends Fragment {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             listContact = new ArrayList<ContactItem>();
         } else listContact = getContactList();
+//        listContact = getContactList();
     }
 
     public ArrayList<ContactItem> getContactList() {
