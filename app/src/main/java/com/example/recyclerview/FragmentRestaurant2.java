@@ -295,6 +295,8 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
 //                            Log.i("receiveMsg : ", receiveMsg);
 //                            reader.close();
 //                            Log.d("123345567789", receiveMsg);
+//                        } else {
+//
 //                        }
 //                    } catch (MalformedURLException e) {
 //                        e.printStackTrace();
