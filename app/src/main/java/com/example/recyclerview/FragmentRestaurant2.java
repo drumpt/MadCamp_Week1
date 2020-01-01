@@ -6,7 +6,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.http.HttpsConnection;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,16 +28,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -46,6 +45,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -62,9 +64,8 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
     private TextView countText;
     LatLng currentLocation;
     static double latitude, longitude;
-
     final static int MAX_COUNT = 10;
-    final static int RADIUS = 1000;
+    final static int RADIUS = 1500;
 
     private GoogleMap mMap;
     private MapView mapView = null;
@@ -75,6 +76,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
     int date = Calendar.getInstance().get(Calendar.DATE);
     int year = Calendar.getInstance().get(Calendar.YEAR);
     private String dateString = month + "/" + date + "/" + year;
+    private String jsonString;
 
     private static final HashMap<Integer, String> int2Str = new HashMap<>();
 
@@ -128,7 +130,8 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (count > 0) {
+//                Toast.makeText(getContext(), Integer.toString(count), Toast.LENGTH_LONG).show();
+                if (newCount > 0) {
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     FragmentRestaurant2 fragmentRestaurant2 = new FragmentRestaurant2();
@@ -219,21 +222,12 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LocationManager lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-//        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//        startActivity(intent);
-//        if (lm == null) {
-//            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//            startActivity(intent);
-//        }
-//        while (lm == null) { }
-
         Location lmLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (lmLocation == null) {
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
             lmLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
-        while (lmLocation == null) {
-        } // Lock
+        while (lmLocation == null) { } // Lock
 
         mMap.clear();
         if (previous_markerOptions != null) previous_markerOptions.clear();
@@ -265,7 +259,6 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
             public void run() {
                 mMap.clear();
                 previous_markerOptions.clear();
-                String str, receiveMsg;
                 for (noman.googleplaces.Place place : places) {
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.title(place.getName()); // 가게 이름
@@ -274,56 +267,27 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                     String markerSnippet = getCurrentAddress(latLng); // 가게 주소
                     markerOptions.snippet(markerSnippet);
 
-//                    HttpURLConnection myConnection = null;
-//                    try {
-//                        String urlString = "https://maps.googleapis.com/maps/api/place/details/json?place_id="
-//                                + place.getPlaceId()
-//                                + "&fields=international_phone_number,rating,photo&key="
-//                                + "AIzaSyBz7Wzq-hDppkuq3c6wfe73KipHyRyKTio";
-//                        URL url = new URL(urlString);
-//                        Log.d("3290578ew90r21***", urlString);
-//                        myConnection = (HttpsURLConnection) url.openConnection();
-//                        myConnection.setRequestProperty("User-Agent", "com.example.recyclerview");
-//                        if (myConnection.getResponseCode() == myConnection.HTTP_OK) {
-//                            InputStreamReader responseBodyReader = new InputStreamReader(myConnection.getInputStream(), "UTF-8");
-//                            BufferedReader reader = new BufferedReader(responseBodyReader);
-//                            StringBuffer buffer = new StringBuffer();
-//                            while ((str = reader.readLine()) != null) {
-//                                buffer.append(str);
-//                            }
-//                            receiveMsg = buffer.toString();
-//                            Log.i("receiveMsg : ", receiveMsg);
-//                            reader.close();
-//                            Log.d("123345567789", receiveMsg);
-//                        } else {
-//
-//                        }
-//                    } catch (MalformedURLException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//
-//                    } finally {
-//
-//                    }
+                    String urlString = "https://maps.googleapis.com/maps/api/place/details/json?place_id="
+                            + place.getPlaceId()
+                            + "&fields=international_phone_number,rating&key="
+                            + "AIzaSyBz7Wzq-hDppkuq3c6wfe73KipHyRyKTio";
 
-                    // 별점, 사진 추가하면 좋음
-                    Log.d("13907d0z9f*", place.getPlaceId());
-                    Log.d("f235840", markerSnippet);
+                    String rating = "", phone_number = "";
+                    receiveJsonString(urlString);
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        rating = jsonObject.getJSONObject("result").getString("rating");
+                        phone_number = jsonObject.getJSONObject("result").getString("international_phone_number");
+                    } catch (JSONException e) {
 
-//                    Log.d("123rwsadg*3*2tr43*", places.toString());
-//                    String url = "https://maps.googleapis.com/maps/api/place/search/json?radius="
-//                            + RADIUS
-//                            + "&sensor=false&key="
-//                            + "AIzaSyBz7Wzq-hDppkuq3c6wfe73KipHyRyKTio"
-//                            + "&location="
-//                            + latitude
-//                            + ","
-//                            + longitude;
-
-
-                    //                    Log.d("194503u125092", url);
-
-                    previous_markerOptions.add(markerOptions);
+                    }
+                    if (rating.equals("")) continue;
+                    else {
+                        Double ratingDouble = Double.parseDouble(rating);
+                        Log.d("@@@@@@@@@@", Double.toString(ratingDouble));
+                        Log.d("@@@@@@@@!!@@@", Integer.toString(Double.compare(ratingDouble, 3.5)));
+                        if (Double.compare(ratingDouble, 3.5) > 0) previous_markerOptions.add(markerOptions);
+                    }
                 }
                 // Distinct MarkerOptions
                 HashSet<MarkerOptions> hashSet = new HashSet<>();
@@ -331,13 +295,11 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                 previous_markerOptions.clear();
                 previous_markerOptions.addAll(hashSet);
 
-                Log.d("Succ***4*134*132*4132*4", Integer.toString(previous_markerOptions.size()));
                 int index = new Random().nextInt(previous_markerOptions.size());
-
-                Log.d("awefiofxzbvcnmllsdkf", Integer.toString(index));
-
                 MarkerOptions restaurant = previous_markerOptions.get(index);
 
+                Log.d("Succ***4*134*132*4132*4", Integer.toString(previous_markerOptions.size()));
+                Log.d("awefiofxzbvcnmllsdkf", Integer.toString(index));
                 Log.d("2390578qazvc134", restaurant.getTitle());
 
                 mMap.addMarker(restaurant).showInfoWindow();
@@ -391,7 +353,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public int readCount (String filename){
+    public int readCount(String filename) {
         try {
             // 파일에서 읽은 데이터를 저장하기 위해서 만든 변수
             FileInputStream fis = getContext().openFileInput(filename);//파일명
@@ -409,7 +371,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public int writeCount (String filename){
+    public int writeCount(String filename) {
         int previous_count = readCount(filename);
         String fullResult;
         try {
@@ -426,5 +388,43 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
             e.printStackTrace();
         }
         return previous_count;
+    }
+
+    public void receiveJsonString(String urlString) {
+        final String tmpString = urlString;
+        jsonString = "";
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                HttpURLConnection myConnection = null;
+                String str;
+                try {
+                    URL url = new URL(tmpString);
+                    Log.d("3290578ew90r21***", tmpString);
+                    myConnection = (HttpsURLConnection) url.openConnection();
+                    myConnection.setRequestProperty("User-Agent", "com.example.recyclerview");
+                    if (myConnection.getResponseCode() == myConnection.HTTP_OK) {
+                        InputStreamReader responseBodyReader = new InputStreamReader(myConnection.getInputStream(), "UTF-8");
+                        BufferedReader reader = new BufferedReader(responseBodyReader);
+                        StringBuffer buffer = new StringBuffer();
+                        while ((str = reader.readLine()) != null) {
+                            buffer.append(str);
+                        }
+                        jsonString = buffer.toString();
+                        myConnection.disconnect();
+                        reader.close();
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    jsonString = e.toString();
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
