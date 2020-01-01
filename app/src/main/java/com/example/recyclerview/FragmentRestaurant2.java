@@ -1,9 +1,12 @@
 package com.example.recyclerview;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.http.HttpsConnection;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,14 +32,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import noman.googleplaces.NRPlaces;
 import noman.googleplaces.Place;
@@ -51,7 +62,9 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
     private TextView countText;
     LatLng currentLocation;
     static double latitude, longitude;
+
     final static int MAX_COUNT = 10;
+    final static int RADIUS = 1000;
 
     private GoogleMap mMap;
     private MapView mapView = null;
@@ -118,7 +131,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     FragmentRestaurant2 fragmentRestaurant2 = new FragmentRestaurant2();
-                    fragmentTransaction.replace(R.id.restaurant2, fragmentRestaurant2);
+                    fragmentTransaction.replace(((ViewGroup) getView().getParent()).getId(), fragmentRestaurant2);
                     fragmentTransaction.commitAllowingStateLoss();
                 } else Toast.makeText(getContext(), "남은 맛집이 없습니다.", Toast.LENGTH_SHORT).show();
             }
@@ -130,7 +143,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 FragmentRestaurant fragmentRestaurant = new FragmentRestaurant();
-                fragmentTransaction.replace(R.id.restaurant1, fragmentRestaurant);
+                fragmentTransaction.replace(((ViewGroup) getView().getParent()).getId(), fragmentRestaurant);
                 fragmentTransaction.commitAllowingStateLoss();
             }
         });
@@ -218,7 +231,8 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
             lmLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
-        while (lmLocation == null) { } // Lock
+        while (lmLocation == null) {
+        } // Lock
 
         mMap.clear();
         if (previous_markerOptions != null) previous_markerOptions.clear();
@@ -227,14 +241,14 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         longitude = lmLocation.getLongitude();
         currentLocation = new LatLng(latitude, longitude);
         MapsInitializer.initialize(getContext());
+        showPlaceInformation(currentLocation);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
-        showPlaceInformation(currentLocation);
     }
 
     @Override
     public void onPlacesFailure(PlacesException e) {
-
+        Log.d("waeidortu234882940t", "failed!!!!!!!!!!!!!!!!!!!!!!");
     }
 
     @Override
@@ -248,17 +262,66 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mMap.clear();
+                previous_markerOptions.clear();
+                String str, receiveMsg;
                 for (noman.googleplaces.Place place : places) {
-                    // 별점과 사진, 혹은 주소도 추가하면 좋을 듯
-//                    String markerSnippet = getCurrentAddress(latLng);
                     MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.title(place.getName());
-                    LatLng latLng = new LatLng(place.getLatitude(), place.getLongitude());
+                    markerOptions.title(place.getName()); // 가게 이름
+                    LatLng latLng = new LatLng(place.getLatitude(), place.getLongitude()); // 가게 위치(경도, 위도)
                     markerOptions.position(latLng);
+                    String markerSnippet = getCurrentAddress(latLng); // 가게 주소
+                    markerOptions.snippet(markerSnippet);
 
-//                    markerOptions.snippet(markerSnippet);
-//                    mMap.addMarker(markerOptions).showInfoWindow();
-//                    Marker item = mMap.addMarker(markerOptions).showInfoWindow();
+//                    HttpURLConnection myConnection = null;
+//                    try {
+//                        String urlString = "https://maps.googleapis.com/maps/api/place/details/json?place_id="
+//                                + place.getPlaceId()
+//                                + "&fields=international_phone_number,rating,photo&key="
+//                                + "AIzaSyBz7Wzq-hDppkuq3c6wfe73KipHyRyKTio";
+//                        URL url = new URL(urlString);
+//                        Log.d("3290578ew90r21***", urlString);
+//                        myConnection = (HttpsURLConnection) url.openConnection();
+//                        myConnection.setRequestProperty("User-Agent", "com.example.recyclerview");
+//                        if (myConnection.getResponseCode() == myConnection.HTTP_OK) {
+//                            InputStreamReader responseBodyReader = new InputStreamReader(myConnection.getInputStream(), "UTF-8");
+//                            BufferedReader reader = new BufferedReader(responseBodyReader);
+//                            StringBuffer buffer = new StringBuffer();
+//                            while ((str = reader.readLine()) != null) {
+//                                buffer.append(str);
+//                            }
+//                            receiveMsg = buffer.toString();
+//                            Log.i("receiveMsg : ", receiveMsg);
+//                            reader.close();
+//                            Log.d("123345567789", receiveMsg);
+//                        } else {
+//
+//                        }
+//                    } catch (MalformedURLException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//
+//                    } finally {
+//
+//                    }
+
+                    // 별점, 사진 추가하면 좋음
+                    Log.d("13907d0z9f*", place.getPlaceId());
+                    Log.d("f235840", markerSnippet);
+
+//                    Log.d("123rwsadg*3*2tr43*", places.toString());
+//                    String url = "https://maps.googleapis.com/maps/api/place/search/json?radius="
+//                            + RADIUS
+//                            + "&sensor=false&key="
+//                            + "AIzaSyBz7Wzq-hDppkuq3c6wfe73KipHyRyKTio"
+//                            + "&location="
+//                            + latitude
+//                            + ","
+//                            + longitude;
+
+
+                    //                    Log.d("194503u125092", url);
+
                     previous_markerOptions.add(markerOptions);
                 }
                 // Distinct MarkerOptions
@@ -268,12 +331,14 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                 previous_markerOptions.addAll(hashSet);
 
                 Log.d("Succ***4*134*132*4132*4", Integer.toString(previous_markerOptions.size()));
-
                 int index = new Random().nextInt(previous_markerOptions.size());
 
                 Log.d("awefiofxzbvcnmllsdkf", Integer.toString(index));
 
                 MarkerOptions restaurant = previous_markerOptions.get(index);
+
+                Log.d("2390578qazvc134", restaurant.getTitle());
+
                 mMap.addMarker(restaurant).showInfoWindow();
                 mMap.setMyLocationEnabled(true);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(restaurant.getPosition()));
@@ -290,17 +355,42 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         mMap.clear();
         if (previous_markerOptions != null) previous_markerOptions.clear();
         new NRPlaces.Builder()
-            .listener(this)
-            .key("AIzaSyDrygOlhd8x69FSZSDVh4_QTugYzNLzPMc")
-            .latlng(location.latitude, location.longitude)
+                .listener(this)
+                .key("AIzaSyBz7Wzq-hDppkuq3c6wfe73KipHyRyKTio")
+                .latlng(location.latitude, location.longitude)
 //                .latlng(36.363123, 127.358255)
-            .radius(500) // Meter
-            .type("restaurant")
-            .build()
-            .execute();
+                .radius(RADIUS) // Meter
+                .type("restaurant")
+                .build()
+                .execute();
     }
 
-    public int readCount(String filename) {
+    public String getCurrentAddress(LatLng latlng) {
+        //지오코더... GPS를 주소로 변환
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+
+        List<Address> addresses;
+
+        try {
+            addresses = geocoder.getFromLocation(latlng.latitude, latlng.longitude, 1);
+        } catch (IOException ioException) { // Network Problem
+            Toast.makeText(getActivity(), "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
+            return "지오코더 서비스 사용불가";
+        } catch (IllegalArgumentException illegalArgumentException) {
+            Toast.makeText(getActivity(), "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
+            return "잘못된 GPS 좌표";
+        }
+
+        if (addresses == null || addresses.size() == 0) {
+            Toast.makeText(getActivity(), "주소 미발견", Toast.LENGTH_LONG).show();
+            return "주소 미발견";
+        } else {
+            Address address = addresses.get(0);
+            return address.getAddressLine(0).toString();
+        }
+    }
+
+    public int readCount (String filename){
         try {
             // 파일에서 읽은 데이터를 저장하기 위해서 만든 변수
             FileInputStream fis = getContext().openFileInput(filename);//파일명
@@ -318,7 +408,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public int writeCount(String filename) {
+    public int writeCount (String filename){
         int previous_count = readCount(filename);
         String fullResult;
         try {
