@@ -79,7 +79,6 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
     private String jsonString;
 
     private static final HashMap<Integer, String> int2Str = new HashMap<>();
-
     static {
         int2Str.put(1, "첫");
         int2Str.put(2, "두");

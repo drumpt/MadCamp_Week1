@@ -36,7 +36,7 @@ public class RecyclerViewAdapterGallery extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(@NonNull ImgViewHolder holder, final int position) {
 
         holder.img_title.setText(mData.get(position).getTitle());
-        holder.img_thumbnail.setImageResource(mData.get(position).getThumbnail());
+        holder.img_thumbnail.setImageURI(mData.get(position).getUri());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,7 +45,7 @@ public class RecyclerViewAdapterGallery extends RecyclerView.Adapter<RecyclerVie
                 // passing data to the image activity
                 intent.putExtra("Title", mData.get(position).getTitle());
                 intent.putExtra("Description", mData.get(position).getDescription());
-                intent.putExtra("Thumbnail", mData.get(position).getThumbnail());
+                intent.putExtra("Thumbnail", mData.get(position).getUri().toString());
 
                 //start at activity
                 mContext.startActivity(intent);

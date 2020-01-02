@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:background="@color/colorPrimaryDark"
+        android:background="#FFFFFF"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
@@ -48,18 +48,173 @@
             android:layout_weight="2"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="@color/colorPrimaryDark">
+            android:background="#FFFFFF">
 
-            <TextView
-                android:id="@+id/img_description"
-                android:textColor="#ffffff"
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Description"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textSize="15dp"
-                android:textStyle=""/>
+                android:background="#00000000"
+                android:padding="5dp"
+                android:scrollbarSize="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000">
+
+                    <View
+                        android:id="@+id/divider0"
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000" />
+
+                    <ImageButton
+                        android:id="@+id/btn_Back"
+                        android:layout_width="80dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:onClick="onClickBack"
+                        android:padding="1dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_chevron_left_black_24dp" />
+
+                    <View
+                        android:id="@+id/divider1"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000" />
+
+                    <ImageButton
+                        android:id="@+id/btn_Fav"
+                        android:layout_width="80dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:onClick="onClickFav"
+                        android:padding="1dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_favorite_black_24dp" />
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000" />
+
+                    <ImageButton
+                        android:id="@+id/btn_Zoom"
+                        android:layout_width="80dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:onClick="onClickZoom"
+                        android:padding="1dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_zoom_in_black_24dp" />
+
+                    <View
+                        android:id="@+id/divider3"
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000" />
+
+                    <ImageButton
+                        android:id="@+id/btn_Share"
+                        android:layout_width="80dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:onClick="onClickShare"
+                        android:padding="1dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_share_black_24dp" />
+
+                    <View
+                        android:id="@+id/divider4"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000" />
+
+                    <ImageButton
+                        android:id="@+id/btn_ConvenienceStore"
+                        android:layout_width="80dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:padding="1dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/conveniencestore" />
+
+                    <View
+                        android:id="@+id/divider5"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000" />
+
+                    <ImageButton
+                        android:id="@+id/btn_ATM"
+                        android:layout_width="80dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+
+                        android:padding="1dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/atm" />
+
+                    <View
+                        android:id="@+id/divider6"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000" />
+
+                    <ImageButton
+                        android:id="@+id/btn_ReadingRoom"
+                        android:layout_width="80dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:padding="1dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/readingroom" />
+
+                    <View
+                        android:id="@+id/divider7"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000" />
+
+                    <ImageButton
+                        android:id="@+id/btn_Gym"
+                        android:layout_width="80dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:padding="1dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/gym" />
+
+                    <View
+                        android:id="@+id/divider8"
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
         </LinearLayout>
 
 </LinearLayout>
