@@ -29,9 +29,9 @@ public class FragmentRestaurant extends Fragment {
     final static int MAX_COUNT = 3;
 
     Calendar calendar = Calendar.getInstance();
-    int month = Calendar.getInstance().get(Calendar.MONTH); // month+1
-    int date = Calendar.getInstance().get(Calendar.DATE);
-    int year = Calendar.getInstance().get(Calendar.YEAR);
+    int month = calendar.get(Calendar.MONTH); // month+1
+    int date = calendar.getInstance().get(Calendar.DATE);
+    int year = calendar.getInstance().get(Calendar.YEAR);
     private String dateString = month + "/" + date + "/" + year;
 
     public FragmentRestaurant() {

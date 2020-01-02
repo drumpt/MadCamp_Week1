@@ -72,9 +72,9 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
     List<MarkerOptions> previous_markerOptions = new ArrayList<>();
 
     Calendar calendar = Calendar.getInstance();
-    int month = Calendar.getInstance().get(Calendar.MONTH); // month+1
-    int date = Calendar.getInstance().get(Calendar.DATE);
-    int year = Calendar.getInstance().get(Calendar.YEAR);
+    int month = calendar.get(Calendar.MONTH);
+    int date = calendar.getInstance().get(Calendar.DATE);
+    int year = calendar.getInstance().get(Calendar.YEAR);
     private String dateString = month + "/" + date + "/" + year;
     private String jsonString;
 

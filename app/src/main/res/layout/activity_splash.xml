@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="밥주세요"
+        android:textStyle="bold"
         android:layout_marginTop="30dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Display2"
         android:textColor="#ffffff" />
@@ -35,6 +36,6 @@
         android:layout_marginTop="10dp"
         android:textSize="20dp"
         android:textColor="#ffffff"
-        android:text="Madcamp Project 1"
+        android:text="김창훈 조혜빈"
         />
 </LinearLayout>

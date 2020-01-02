@@ -13,15 +13,15 @@
         android:text="@string/app_name"
         android:textStyle="bold"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="20dp"
-        android:background="#FFEDD9"
-        android:gravity="center_vertical"
+        android:textSize="30dp"
+        android:background="#DDDDDD"
+        android:gravity="center|bottom"
         android:padding="10dp"/>
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFEDD9"
+        android:background="#DDDDDD"
         app:tabMode="fixed"
         app:tabGravity="fill"
         app:tabIndicatorColor="#FF0000"
