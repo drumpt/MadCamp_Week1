@@ -65,7 +65,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
     LatLng currentLocation;
     static double latitude, longitude;
     final static int MAX_COUNT = 3;
-    final static int RADIUS = 1500;
+    final static int RADIUS = 1000;
 
     private GoogleMap mMap;
     private MapView mapView = null;
