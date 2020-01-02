@@ -9,10 +9,13 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.github.chrisbanes.photoview.PhotoView;
+
 
 public class ImageActivity extends AppCompatActivity {
     private TextView imgTitle;
-    private ImageView img;
+    //private ImageView img;
+    private PhotoView photoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +24,8 @@ public class ImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image);
 
         imgTitle = (TextView)findViewById(R.id.img_title);
-        img = (ImageView)findViewById(R.id.img_thumbnail);
+       // img = (ImageView)findViewById(R.id.img_thumbnail);
+        photoView = findViewById(R.id.photoView);
 
         // Receive Data
         Intent intent = getIntent();
@@ -30,6 +34,7 @@ public class ImageActivity extends AppCompatActivity {
 
         // Setting values
         imgTitle.setText(title);
-        img.setImageURI(Uri.parse(image));
+       // img.setImageURI(Uri.parse(image));
+        photoView.setImageURI(Uri.parse(image));
     }
 }

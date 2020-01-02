@@ -44,7 +44,7 @@ public class FragmentGallery extends Fragment {
         myrecyclerview.setLayoutManager((new GridLayoutManager(getContext(), 3)));
         recyclerAdapter = new RecyclerViewAdapterGallery(getContext(), lstImageCard);
         myrecyclerview.setAdapter(recyclerAdapter);
-        return v;   
+        return v;
     }
 
     @Override
