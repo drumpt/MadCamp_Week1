@@ -1,6 +1,5 @@
 package com.example.recyclerview;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -34,12 +33,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -48,9 +49,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import javax.net.ssl.HttpsURLConnection;
 
 import noman.googleplaces.NRPlaces;
@@ -58,7 +56,7 @@ import noman.googleplaces.Place;
 import noman.googleplaces.PlacesException;
 import noman.googleplaces.PlacesListener;
 
-public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback, PlacesListener, GoogleMap.InfoWindowAdapter {
+public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback, PlacesListener {
     View v;
     private ImageView refreshButton;
     private ImageView backButton;
@@ -66,7 +64,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
     private TextView countText;
     LatLng currentLocation;
     static double latitude, longitude;
-    final static int MAX_COUNT = 10;
+    final static int MAX_COUNT = 3;
     final static int RADIUS = 1500;
 
     private GoogleMap mMap;
@@ -288,7 +286,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                         Log.d("@@@@@@@@@@", Double.toString(ratingDouble));
                         Log.d("@@@@@@@@!!@@@", Integer.toString(Double.compare(ratingDouble, 3.5)));
 
-                        String markerSnippet = "평점 : " + Double.toString(ratingDouble) + "/5.0\n"
+                        String markerSnippet = "평점 : " + ratingDouble + "/5.0\n"
                                 + "전화 : " + phone_number + "\n"
                                 + "주소 : " + getCurrentAddress(latLng);
                         markerOptions.snippet(markerSnippet);
@@ -309,10 +307,18 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                 Log.d("awefiofxzbvcnmllsdkf", Integer.toString(index));
                 Log.d("2390578qazvc134", restaurant.getTitle());
 
-                mMap.addMarker(restaurant).showInfoWindow();
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setAllGesturesEnabled(true);
-//                mMap.setOnMapLongClickListener(getContext());
+                InfoWindowData info = new InfoWindowData();
+                info.setName(restaurant.getTitle());
+                info.setSnippet(restaurant.getSnippet());
+
+                CustomInfoWindowsGoogleMap customInfoWindowGoogleMap = new CustomInfoWindowsGoogleMap(getContext());
+                mMap.setInfoWindowAdapter(customInfoWindowGoogleMap);
+
+                Marker m = mMap.addMarker(restaurant);
+                m.setTag(info);
+                m.showInfoWindow();
+
+//                mMap.addMarker(restaurant).showInfoWindow();
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(restaurant.getPosition()));
             }
         });
@@ -436,31 +442,4 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
             e.printStackTrace();
         }
     }
-
-    private Context context;
-
-    public void CustomInforWindowGoogleMap(Context ctx) {
-        context = ctx;
-    }
-
-    @Override
-    public View getInfoWindow(Marker marker) {
-        return null;
-    }
-
-    @Override
-    public View getInfoContents(Marker marker) {
-        return null;
-    }
-//
-//    @Override
-//    public View getInfoContents(Marker marker) {
-//        View view =  ((Activity) context).getLayoutInflater().inflate(R.layout.custom_marker_info, null);
-//        TextView name_tv = view.findViewById(R.id.)
-//        TextView tvTitle = ((TextView) myContentsView.findViewById(R.id.title));
-//        tvTitle.setText(marker.getTitle());
-//        TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.snippet));
-//        tvSnippet.setText(marker.getSnippet());
-//        return myContentsView;
-//    }
 }

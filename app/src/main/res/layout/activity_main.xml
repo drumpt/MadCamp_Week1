@@ -14,14 +14,14 @@
         android:textStyle="bold"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20dp"
-        android:background="#f9f9f9"
+        android:background="#FFEDD9"
         android:gravity="center_vertical"
         android:padding="10dp"/>
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f9f9f9"
+        android:background="#FFEDD9"
         app:tabMode="fixed"
         app:tabGravity="fill"
         app:tabIndicatorColor="#FF0000"

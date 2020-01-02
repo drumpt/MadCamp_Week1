@@ -26,7 +26,7 @@ public class FragmentRestaurant extends Fragment {
     View v;
     private ImageView startButton;
     private TextView countText;
-    final static int MAX_COUNT = 10;
+    final static int MAX_COUNT = 3;
 
     Calendar calendar = Calendar.getInstance();
     int month = Calendar.getInstance().get(Calendar.MONTH); // month+1

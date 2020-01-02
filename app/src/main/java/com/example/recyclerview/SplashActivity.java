@@ -12,8 +12,6 @@ import android.view.Window;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import java.sql.Timestamp;
-
 public class SplashActivity extends AppCompatActivity {
 
     String[] PERMISSIONS = {
