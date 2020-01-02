@@ -238,7 +238,6 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         MapsInitializer.initialize(getContext());
         showPlaceInformation(currentLocation);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-//        mMap.setOnMapLongClickListener(this);
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
     }
 
@@ -317,9 +316,10 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                 Marker m = mMap.addMarker(restaurant);
                 m.setTag(info);
                 m.showInfoWindow();
-
 //                mMap.addMarker(restaurant).showInfoWindow();
+                mMap.setMyLocationEnabled(true);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(restaurant.getPosition()));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
             }
         });
     }
