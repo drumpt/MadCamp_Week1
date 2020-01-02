@@ -221,6 +221,9 @@ public class MainActivity extends AppCompatActivity {
             bundle.putStringArrayList("result_images",tmpList);
             fragmentGallery.setArguments(bundle);
             adapter.notifyDataSetChanged();
+            tabLayout.getTabAt(0).setIcon(R.drawable.address_book);
+            tabLayout.getTabAt(1).setIcon(R.drawable.gallery);
+            tabLayout.getTabAt(2).setIcon(R.drawable.restaurant_tab);
 //            myPhotoAdapter = new RecyclerViewAdapterImg(this);
         }
 //            fragmentGallery.setAr(uris);

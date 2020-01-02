@@ -33,44 +33,18 @@ public class FragmentGallery extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         // Data setting
         super.onCreate(savedInstanceState);
-//        for(int i=0;i<20;i++){
-////            lstImageCard.add(new ImageCard());
-////        }
-//        lstImageCard.add(new ImageCard("Hyebin","1st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","2st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","3st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","1st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","2st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","3st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","1st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","2st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","3st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","1st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","2st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","3st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","1st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","2st card",R.drawable.ic_account_circle_black_36dp));
-//        lstImageCard.add(new ImageCard("Hyebin","3st card",R.drawable.ic_account_circle_black_36dp));
 
     }
-
-    //    public void setCard(ArrayList<Uri> uriList){
-//        for(int i=0;i<uriList.size();i++){
-//            ImageCard card = lstImageCard.get(i);
-//            card.setUri(uriList.get(i));
-//        }
-//    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // View setting
-        Log.d("@@@@@@@@@@@@TAG@@@@@@@@", "onCreateView222 called");
         v = inflater.inflate(R.layout.gallery_fragment, container, false); // 갤러리 뿌릴 프래그먼트를 인플레이트
         myrecyclerview = (RecyclerView) v.findViewById(R.id.gallery_recyclerview);
         myrecyclerview.setLayoutManager((new GridLayoutManager(getContext(), 3)));
         recyclerAdapter = new RecyclerViewAdapterGallery(getContext(), lstImageCard);
         myrecyclerview.setAdapter(recyclerAdapter);
-        return v;
+        return v;   
     }
 
     @Override
@@ -79,8 +53,6 @@ public class FragmentGallery extends Fragment {
         super.setArguments(args);
         bundle = args;
         ArrayList<String> lstTmp = bundle.getStringArrayList("result_images");
-        Log.d("12313242345345", lstTmp.get(0));
-        Log.d("12313242345345", lstTmp.get(1));
         uris.clear();
         for (int i = 0; i < lstTmp.size(); i++) {
             uris.add(Uri.parse(lstTmp.get(i)));
@@ -92,18 +64,12 @@ public class FragmentGallery extends Fragment {
         for (int i = 0; i < lstTmp.size(); i++) {
             imageCard = new ImageCard();
             imageCard.setUri(uris.get(i));
-            imageCard.setTitle("" + i);
-            imageCard.setDescription("" + i);
+            imageCard.setTitle((i+1)+"th Image");
+            imageCard.setDescription("");
             imageCards.add(imageCard);
             Log.d("TAG", "" + imageCard.getTitle() + imageCard.getUri());
         }
         lstImageCard.addAll(imageCards);
         recyclerAdapter.notifyDataSetChanged();
-//        recyclerAdapter = new RecyclerViewAdapterGallery(getContext(), lstImageCard);
-//        FragmentManager fragmentManager = getFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        FragmentGallery fragmentGallery = new FragmentGallery();
-//        fragmentTransaction.replace(((ViewGroup) getView().getParent()).getId(), fragmentGallery);
-//        fragmentTransaction.commitAllowingStateLoss();
     }
 }

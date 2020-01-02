@@ -127,6 +127,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(getContext(), Integer.toString(newCount), Toast.LENGTH_SHORT).show();
                 if (count > 0) {
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

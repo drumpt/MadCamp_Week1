@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ImageActivity extends AppCompatActivity {
-    private TextView imgTitle,imgDescription;
+    private TextView imgTitle;
     private ImageView img;
 
     @Override
@@ -21,19 +21,15 @@ public class ImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image);
 
         imgTitle = (TextView)findViewById(R.id.img_title);
-        imgDescription = (TextView)findViewById(R.id.img_description);
         img = (ImageView)findViewById(R.id.img_thumbnail);
 
         // Receive Data
         Intent intent = getIntent();
         String title = intent.getExtras().getString("Title");
-        String description = intent.getExtras().getString("Description");
         String image = intent.getExtras().getString("Thumbnail");
 
         // Setting values
         imgTitle.setText(title);
-        Log.d("TAG",imgTitle.getText().toString());
-        imgDescription.setText(description);
         img.setImageURI(Uri.parse(image));
     }
 }
