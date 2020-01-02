@@ -1,5 +1,6 @@
 package com.example.recyclerview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
@@ -56,7 +58,7 @@ import noman.googleplaces.Place;
 import noman.googleplaces.PlacesException;
 import noman.googleplaces.PlacesListener;
 
-public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback, PlacesListener {
+public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback, PlacesListener, GoogleMap.InfoWindowAdapter {
     View v;
     private ImageView refreshButton;
     private ImageView backButton;
@@ -238,6 +240,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
         MapsInitializer.initialize(getContext());
         showPlaceInformation(currentLocation);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+//        mMap.setOnMapLongClickListener(this);
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
     }
 
@@ -264,8 +267,6 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                     markerOptions.title(place.getName()); // 가게 이름
                     LatLng latLng = new LatLng(place.getLatitude(), place.getLongitude()); // 가게 위치(경도, 위도)
                     markerOptions.position(latLng);
-                    String markerSnippet = getCurrentAddress(latLng); // 가게 주소
-                    markerOptions.snippet(markerSnippet);
 
                     String urlString = "https://maps.googleapis.com/maps/api/place/details/json?place_id="
                             + place.getPlaceId()
@@ -286,6 +287,12 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                         Double ratingDouble = Double.parseDouble(rating);
                         Log.d("@@@@@@@@@@", Double.toString(ratingDouble));
                         Log.d("@@@@@@@@!!@@@", Integer.toString(Double.compare(ratingDouble, 3.5)));
+
+                        String markerSnippet = "평점 : " + Double.toString(ratingDouble) + "/5.0\n"
+                                + "전화 : " + phone_number + "\n"
+                                + "주소 : " + getCurrentAddress(latLng);
+                        markerOptions.snippet(markerSnippet);
+
                         if (Double.compare(ratingDouble, 3.5) > 0) previous_markerOptions.add(markerOptions);
                     }
                 }
@@ -304,6 +311,8 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
 
                 mMap.addMarker(restaurant).showInfoWindow();
                 mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setAllGesturesEnabled(true);
+//                mMap.setOnMapLongClickListener(getContext());
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(restaurant.getPosition()));
             }
         });
@@ -427,4 +436,31 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
             e.printStackTrace();
         }
     }
+
+    private Context context;
+
+    public void CustomInforWindowGoogleMap(Context ctx) {
+        context = ctx;
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return null;
+    }
+//
+//    @Override
+//    public View getInfoContents(Marker marker) {
+//        View view =  ((Activity) context).getLayoutInflater().inflate(R.layout.custom_marker_info, null);
+//        TextView name_tv = view.findViewById(R.id.)
+//        TextView tvTitle = ((TextView) myContentsView.findViewById(R.id.title));
+//        tvTitle.setText(marker.getTitle());
+//        TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.snippet));
+//        tvSnippet.setText(marker.getSnippet());
+//        return myContentsView;
+//    }
 }
