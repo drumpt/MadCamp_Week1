@@ -264,13 +264,29 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                     LatLng latLng = new LatLng(place.getLatitude(), place.getLongitude()); // 가게 위치(경도, 위도)
                     markerOptions.position(latLng);
 
+                    // for http request
                     String urlString = "https://maps.googleapis.com/maps/api/place/details/json?place_id="
                             + place.getPlaceId()
                             + "&fields=international_phone_number,rating&key="
                             + "AIzaSyBz7Wzq-hDppkuq3c6wfe73KipHyRyKTio";
+                    markerOptions.snippet(urlString);
+                    previous_markerOptions.add(markerOptions);
+                }
+
+                // Distinct MarkerOptions
+                HashSet<MarkerOptions> hashSet = new HashSet<>();
+                hashSet.addAll(previous_markerOptions);
+                previous_markerOptions.clear();
+                previous_markerOptions.addAll(hashSet);
+
+                int index;
+                MarkerOptions restaurant;
+                while (true) {
+                    index = new Random().nextInt(previous_markerOptions.size());
+                    restaurant = previous_markerOptions.get(index);
 
                     String rating = "", phone_number = "";
-                    receiveJsonString(urlString);
+                    receiveJsonString(restaurant.getSnippet());
                     try {
                         JSONObject jsonObject = new JSONObject(jsonString);
                         rating = jsonObject.getJSONObject("result").getString("rating");
@@ -283,39 +299,28 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                         Double ratingDouble = Double.parseDouble(rating);
                         Log.d("@@@@@@@@@@", Double.toString(ratingDouble));
                         Log.d("@@@@@@@@!!@@@", Integer.toString(Double.compare(ratingDouble, 3.5)));
-
+                        if (Double.compare(ratingDouble, 3.5) < 0) continue;
                         String markerSnippet = "평점 : " + ratingDouble + "/5.0\n"
                                 + "전화 : " + phone_number + "\n"
-                                + "주소 : " + getCurrentAddress(latLng);
-                        markerOptions.snippet(markerSnippet);
-
-                        if (Double.compare(ratingDouble, 3.5) > 0) previous_markerOptions.add(markerOptions);
+                                + "주소 : " + getCurrentAddress(restaurant.getPosition());
+                        restaurant.snippet(markerSnippet);
+                        break;
                     }
                 }
-                // Distinct MarkerOptions
-                HashSet<MarkerOptions> hashSet = new HashSet<>();
-                hashSet.addAll(previous_markerOptions);
-                previous_markerOptions.clear();
-                previous_markerOptions.addAll(hashSet);
-
-                int index = new Random().nextInt(previous_markerOptions.size());
-                MarkerOptions restaurant = previous_markerOptions.get(index);
 
                 Log.d("Succ***4*134*132*4132*4", Integer.toString(previous_markerOptions.size()));
                 Log.d("awefiofxzbvcnmllsdkf", Integer.toString(index));
                 Log.d("2390578qazvc134", restaurant.getTitle());
 
-                InfoWindowData info = new InfoWindowData();
-                info.setName(restaurant.getTitle());
-                info.setSnippet(restaurant.getSnippet());
-
                 CustomInfoWindowsGoogleMap customInfoWindowGoogleMap = new CustomInfoWindowsGoogleMap(getContext());
                 mMap.setInfoWindowAdapter(customInfoWindowGoogleMap);
 
+                InfoWindowData info = new InfoWindowData();
+                info.setName(restaurant.getTitle());
+                info.setSnippet(restaurant.getSnippet());
                 Marker m = mMap.addMarker(restaurant);
                 m.setTag(info);
                 m.showInfoWindow();
-//                mMap.addMarker(restaurant).showInfoWindow();
                 mMap.setMyLocationEnabled(true);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(restaurant.getPosition()));
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(16));

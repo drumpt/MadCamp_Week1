@@ -22,7 +22,6 @@ public class CustomInfoWindowsGoogleMap implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoContents(Marker marker) {
-
         View view = ((Activity) context).getLayoutInflater().inflate(R.layout.custom_marker_info, null);
         TextView name_tv = view.findViewById(R.id.marker_title);
         TextView snippet_tv = view.findViewById(R.id.marker_snippet);
