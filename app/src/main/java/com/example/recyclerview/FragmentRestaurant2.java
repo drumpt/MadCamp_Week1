@@ -268,7 +268,7 @@ public class FragmentRestaurant2 extends Fragment implements OnMapReadyCallback,
                     String urlString = "https://maps.googleapis.com/maps/api/place/details/json?place_id="
                             + place.getPlaceId()
                             + "&fields=international_phone_number,rating&key="
-                            + "AIzaSyBz7Wzq-hDppkuq3c6wfe73KipHyRyKTio";
+                            + "AIzaSyBz7Wzq-hDppkuq3c6wfe73KipHsyRyKTio";
                     markerOptions.snippet(urlString);
                     previous_markerOptions.add(markerOptions);
                 }
