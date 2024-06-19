@@ -1,4 +1,4 @@
-# 밥주세요
+# Meal Please (밥주세요)
 
 # Description
 - Android application for implementing contact, gallery, and restaurant recommendation tabs.
